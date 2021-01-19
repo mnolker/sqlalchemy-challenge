@@ -116,7 +116,7 @@ def tobs_most_active_station():
 
     for station, date, tobs in most_active_station_lst12mnths:
      act_temp_dict = {}
-     act_temp_dict["station"] = station
+     #act_temp_dict["station"] = station
      act_temp_dict["date"] = date
      act_temp_dict["temp"] = tobs
      active_temp.append(act_temp_dict)
@@ -140,7 +140,7 @@ def start_date(start_dt):
       temp_dict = {}
       temp_dict["max_temp"] = max_temp
       temp_dict["min_temp"] = min_temp
-      temp_dict["avg_temp"] = avg_temp
+      temp_dict["avg_temp"] = round(avg_temp,1)
       temp_results.append(temp_dict)
 
     return jsonify(temp_results)
@@ -149,7 +149,7 @@ def start_date(start_dt):
 def range_dates(start_dt,end_dt):
     session = Session(engine)
     """start date to limit data pulled"""
-    result_temp = session.query(func.max(Measurement.tobs).label("max_temp"),\
+    result_temp_range = session.query(func.max(Measurement.tobs).label("max_temp"),\
     func.min(Measurement.tobs).label("min_temp"),\
     func.avg(Measurement.tobs).label("avg_temp")).\
     filter(Measurement.date > start_dt).\
@@ -159,11 +159,11 @@ def range_dates(start_dt,end_dt):
 
     temp_results_range = []
 
-    for max_temp, min_temp, avg_temp in result_temp:
+    for max_temp, min_temp, avg_temp in result_temp_range:
       temp_dtrng_dict = {}
       temp_dtrng_dict["max_temp"] = max_temp
       temp_dtrng_dict["min_temp"] = min_temp
-      temp_dtrng_dict["avg_temp"] = avg_temp
+      temp_dtrng_dict["avg_temp"] = round(avg_temp,1)
       temp_results_range.append(temp_dtrng_dict)
 
     return jsonify(temp_results_range)
